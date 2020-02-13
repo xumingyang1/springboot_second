@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <script th:src="@{/js/jquery.min1.10.2.js}" src="../static/js/jquery.min1.10.2.js"></script>
+    <link th:href="@{/js/bootstrap3/css/bootstrap.css}" href="../static/js/bootstrap3/css/bootstrap.css"
+          rel="stylesheet"/>
+    <link th:href="@{/js/bootstrap-table/bootstrap-table.css}" href="../static/js/bootstrap-table/bootstrap-table.css"
+          rel="stylesheet"/>
+    <link th:href="@{/js/bootstrap-treeview/bootstrap-treeview.min.css}" href="../static/js/bootstrap-treeview/bootstrap-treeview.css"
+          rel="stylesheet"/>
+    <link th:href="@{/js/bootstrap-addtabs/bootstrap.addtabs.css}" href="../static/js/bootstrap-addtabs/bootstrap-addtabs.css"
+          rel="stylesheet"/>
+    <script th:src="@{/js/bootstrap-addtabs/bootstrap.addtabs.min.js}"
+            src="../static/js/bootstrap-addtabs/bootstrap.addtabs.min.js"></script>
+    <script th:src="@{/js/bootstrap-table/bootstrap-table.js}"
+            src="../static/js/bootstrap-table/bootstrap-table.js"></script>
+    <script th:src="@{/js/bootstrap-treeview/bootstrap-treeview.min.js}"
+            src="../static/js/bootstrap-treeview/bootstrap-treeview.min.js"></script>
+    <script th:src="@{/js/bootstrap-table/locale/bootstrap-table-zh-CN.js}"
+            src="../static/js/bootstrap-table/locale/bootstrap-table-zh-CN.js"></script>
+    <script th:src="@{/js/bootstrap3/js/bootstrap.js}" src="../static/js/bootstrap3/js/bootstrap.js"></script>
+    <script th:src="@{/js/bootstrap-bootbox/bootbox.js}" src="../static/js/bootstrap-bootbox/bootbox.js"></script>
+
+    <style type="text/css">
+        body {padding-top:70px;}
+    </style>
+</head>
+
+<body>
+<!--导航条  -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <!--定义在容器顶部  -->
+    <div class="container-fluid">
+        <!-- 头部信息 -->
+        <div class="navbar-header">
+            <a class="navbar-brand glyphicon glyphicon-globe" href="javascript:dialogRedis()" id="menu-toggle">
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <!-- 右边的    导航 按钮 -->
+            <ul class="nav navbar-nav navbar-right">
+                <li>    <a href="#"> 注销</a></li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<div class="row clearfix">
+    <div class="col-md-2 column">
+        <div id="myTree"></div>
+    </div>
+    <div class="col-md-10 column">
+        <!-- 选项卡  tabs -->
+        <ul id="myTab" class="nav nav-tabs">
+            <li role="presentation" class="active">
+                <a href="#home" aria-controls="home" role="tab" data-toggle="tab">欢迎</a>
+            </li>
+        </ul>
+        <!--想要打开tab页内容，需要把对应的ul和要打开的内容tab放在一个div里  -->
+        <div class="tab-content">
+            <div role="tabpanel" style="" class="tab-pane active " id="home">
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    $(function(){
+        initTree();
+    })
+    function initTree(){
+        $.ajax({
+            url:'../car/getAllTree',
+            type: "post",
+            dataType: "json",
+            success: function(data){
+                alert(data)
+                $("#myTree").treeview({
+                    data:data,
+                    //含有子节点的图标
+                    collapseIcon:'glyphicon glyphicon-star-empty',
+                    //没有子节点的图标
+                    emptyIcon:'glyphicon glyphicon-usd',
+                    onNodeSelected:function(event,node) {
+                        if (node.url!=null) {
+                            $.addtabs({iframeHeight: 550});
+                            $.addtabs.add({
+                                id:node.id,
+                                title:node.text,
+                                url:"../"+node.url
+                            });
+                        }
+                    }
+                })
+            }
+        })
+    }
+</script>
+</html>

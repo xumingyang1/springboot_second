@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mapper.CarModelMapper" >
+  <resultMap id="BaseResultMap" type="com.jk.model.CarModel" >
+    <id column="carId" property="carid" jdbcType="INTEGER" />
+    <result column="carName" property="carname" jdbcType="VARCHAR" />
+    <result column="carSex" property="carsex" jdbcType="INTEGER" />
+    <result column="carTime" property="cartime" jdbcType="DATE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    carId, carName, carSex, carTime
+  </sql>
+
+
+
+  <select id="queryCarList" resultType="com.jk.model.BookModel" >
+    select *
+    from t_book
+    where 1=1
+    <if test="book_name != null and book_name != '' ">
+      and  book_name like concat('%',concat(#{book_name},'%'))
+    </if>
+  </select>
+
+  <select id="countCar" resultType="com.jk.util.CarRe">
+    SELECT book_name AS name ,COUNT(*) AS value FROM `t_book` where  1=1
+    <if test="carsex !=null and carsex !=''"> and carsex=#{carsex}</if>
+      <if test="cartime !=null"> and cartime>=#{cartime}</if>
+       GROUP BY book_name ORDER BY COUNT(*) DESC LIMIT 0,5
+  </select>
+  <delete id="deleteCar">
+    delete from t_car
+    where carId  in (${ids})
+  </delete>
+  <insert id="insert" parameterType="com.jk.model.CarModel" >
+    insert into t_car (carId, carName, carSex, 
+      carTime)
+    values (#{carid,jdbcType=INTEGER}, #{carname,jdbcType=VARCHAR}, #{carsex,jdbcType=INTEGER}, 
+      #{cartime,jdbcType=DATE})
+  </insert>
+  <insert id="addCar" parameterType="com.jk.model.CarModel" >
+    insert into t_car
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="carid != null" >
+        carId,
+      </if>
+      <if test="carname != null" >
+        carName,
+      </if>
+      <if test="carsex != null" >
+        carSex,
+      </if>
+      <if test="cartime != null" >
+        carTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="carid != null" >
+        #{carid,jdbcType=INTEGER},
+      </if>
+      <if test="carname != null" >
+        #{carname,jdbcType=VARCHAR},
+      </if>
+      <if test="carsex != null" >
+        #{carsex,jdbcType=INTEGER},
+      </if>
+      <if test="cartime != null" >
+        #{cartime,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.jk.model.CarModel" >
+    update t_car
+    <set >
+      <if test="carname != null" >
+        carName = #{carname,jdbcType=VARCHAR},
+      </if>
+      <if test="carsex != null" >
+        carSex = #{carsex,jdbcType=INTEGER},
+      </if>
+      <if test="cartime != null" >
+        carTime = #{cartime,jdbcType=DATE},
+      </if>
+    </set>
+    where carId = #{carid,jdbcType=INTEGER}
+  </update>
+  <update id="updateCaa" parameterType="com.jk.model.CarModel" >
+    update t_car
+    set carName = #{carname,jdbcType=VARCHAR},
+      carSex = #{carsex,jdbcType=INTEGER},
+      carTime = #{cartime,jdbcType=DATE}
+    where carId = #{carid,jdbcType=INTEGER}
+  </update>
+</mapper>
